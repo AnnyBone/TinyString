@@ -1,0 +1,42 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# vs
+*.exe
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.vcxproj
+*.filters
+*.user
+Debug/
+Release/
+ipch/
+readBitmap/*.bmp
+ddraw/*.jpg
+ddraw/*.bmp
+ddraw/BitmapData.cpp
+ddraw/BitmapData.h
+spriteTest/*.jpg
+spriteTest/*.bmp
+*.bmp
+*.jpg
+*.tga
+*.x
+*.png
+*.dds
+*.raw
+*.bat
+/JgeFoundation/ReadMe.txt
