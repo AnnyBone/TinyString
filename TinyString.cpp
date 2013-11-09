@@ -131,7 +131,7 @@ TinyString::StringMemory* TinyString::StringAlloc::alloc(const wchar_t* lpString
 	}
 	else
 	{
-		uint fixedLength = getCeilPowerOf2(length);
+		uint fixedLength = getCeilPowerOf2(length + 1/*'\0'*/);
 		TinyString::StringAlloc::StringPoolMap::iterator findResult = m_stringPoolMap.find(fixedLength);
 		if(findResult != m_stringPoolMap.end())
 		{
@@ -203,8 +203,8 @@ bool TinyString::IndexStack::pop(uint* index)
 	else
 	{
 		if(index != 0)
-		{
-			*index = m_lpIndexList[m_position--];
+		{ 
+			*index = m_lpIndexList[--m_position];
 		}
 		return true;
 	}
@@ -279,7 +279,7 @@ TinyString::StringMemory* TinyString::StringPool::pushString(const wchar_t* lpSt
 		}
 		else
 		{
-			TinyString::StringMemory* lpStringMemory = lpStringPoolThis->setString(lpString);
+			lpStringMemory = lpStringPoolThis->setString(lpString);
 			if(lpStringMemory != null)
 			{
 				++lpStringMemory->usedCount;
@@ -292,7 +292,8 @@ TinyString::StringMemory* TinyString::StringPool::pushString(const wchar_t* lpSt
 				size_t strLen = wcslen(lpString) + 1/*'\0'*/;
 				memcpy(m_lpStringMemoryList[index].lpStr, lpString, strLen * sizeof(wchar_t));
 				lpStringMemory = &m_lpStringMemoryList[index];
-				break;
+				++lpStringMemory->usedCount;
+				return lpStringMemory;
 			}
 			else
 			{
