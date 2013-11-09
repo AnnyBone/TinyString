@@ -7,7 +7,7 @@
 
 namespace tinyString
 {
-	class __declspec(dllexport) TinyString
+	class TINY_STRING_DLL TinyString
 	{
 		public:
 		TinyString();
