@@ -174,7 +174,7 @@ TinyString::IndexStack::IndexStack(uint capability):
 
 TinyString::IndexStack::~IndexStack()
 {
-	if(m_lpIndexList != 0)
+	if(m_lpIndexList != null)
 	{
 		delete[] m_lpIndexList;
 		m_lpIndexList = null;
@@ -202,7 +202,7 @@ bool TinyString::IndexStack::pop(uint* index)
 	}
 	else
 	{
-		if(index != 0)
+		if(index != null)
 		{ 
 			*index = m_lpIndexList[--m_position];
 		}
@@ -323,14 +323,14 @@ TinyString::StringMemory* TinyString::StringPool::setString(const wchar_t* lpStr
 
 void TinyString::StringPool::recycle(TinyString::StringMemory* lpStringMemory)
 {
-	assert(lpStringMemory != 0);
+	assert(lpStringMemory != null);
 	assert(lpStringMemory->usedCount == 0);
 	m_lpFreeIndexStack->push(lpStringMemory->indexInStringPool);
 }
 
 // StringMemory-----------------------------------------------------------------------------------
 TinyString::StringMemory::StringMemory():
-	lpBelongToWhichStringPool(0), usedCount(0), indexInStringPool(0), lpStr(0)
+	lpBelongToWhichStringPool(null), usedCount(0), indexInStringPool(0), lpStr(null)
 {
 	// Do nothing
 }
