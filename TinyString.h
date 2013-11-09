@@ -3,6 +3,8 @@
 
 #include <map>
 
+#include "TinyStringDefine.h"
+
 namespace tinyString
 {
 	class TinyString
@@ -30,8 +32,6 @@ namespace tinyString
 		// -----------------------------------------------------------------------------------
 		StringMemory* m_lpStringMemory;
 
-		static wchar_t* wcsclone(const wchar_t* lpSrc, wchar_t* lpDest = 0);
-
 		void release();
 
 		// StringAlloc-----------------------------------------------------------------------------------
@@ -40,15 +40,15 @@ namespace tinyString
 		friend TinyString;
 
 		private:
-			static const unsigned int NUM_BLOCKS_PER_STRINGPOOL;
+			static const uint NUM_BLOCKS_PER_STRINGPOOL;
 			static StringMemory m_nullStringMemory;
 			static StringMemory m_emptyStringMemory;
 
-			typedef std::map<unsigned int, StringPool*> StringPoolMap;
+			typedef std::map<uint, StringPool*> StringPoolMap;
 			static StringPoolMap m_stringPoolMap;
 
 			static StringMemory* alloc(const wchar_t* lpString);
-			static unsigned int getCeilPowerOf2(unsigned int value);
+			static uint getCeilPowerOf2(uint value);
 
 			StringAlloc(const StringAlloc& value);
 			StringAlloc& operator=(const StringAlloc& value);
@@ -58,16 +58,16 @@ namespace tinyString
 		class IndexStack
 		{
 		public:
-			IndexStack(unsigned int capability);
+			IndexStack(uint capability);
 			~IndexStack();
 
-			bool push(unsigned int index);
-			bool pop(unsigned int* index);
+			bool push(uint index);
+			bool pop(uint* index);
 
 		private:
-			unsigned int* m_lpIndexList;
-			unsigned int m_position;
-			unsigned int m_capability;
+			uint* m_lpIndexList;
+			uint m_position;
+			uint m_capability;
 
 			IndexStack(const IndexStack& value);
 			IndexStack& operator=(const IndexStack& value);
@@ -77,16 +77,17 @@ namespace tinyString
 		class StringPool
 		{
 		public:
-			StringPool(unsigned int numBlocks, unsigned int blockChars);
+			StringPool(uint numBlocks, uint blockChars);
 			~StringPool();
 
-			inline unsigned int getBlockChars() const { return m_blockChars; }
+			inline uint getBlockChars() const { return m_blockChars; }
 			StringMemory* pushString(const wchar_t* lpString);
+			StringMemory* setString(const wchar_t* lpString);
 			void recycle(StringMemory* lpStringMemory);
 
 		private:
-			unsigned int m_numBlocks;
-			unsigned int m_blockChars;
+			uint m_numBlocks;
+			uint m_blockChars;
 			StringMemory* m_lpStringMemoryList;
 			StringPool* m_lpNextStringPool;
 			IndexStack* m_lpFreeIndexStack;
@@ -102,8 +103,8 @@ namespace tinyString
 			StringMemory();
 
 			StringPool* lpBelongToWhichStringPool;
-			unsigned int usedCount;
-			unsigned int indexInStringPool;
+			uint usedCount;
+			uint indexInStringPool;
 			wchar_t* lpStr;
 
 		private:
