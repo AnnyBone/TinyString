@@ -25,6 +25,9 @@ namespace tinyString
 		bool isNullOrEmpty();
 
 		private:
+		void *operator new(size_t size);
+		void operator delete(void *ptr);
+
 		// -----------------------------------------------------------------------------------
 		class StringPool;
 		class StringMemory;
