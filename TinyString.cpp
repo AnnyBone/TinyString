@@ -27,7 +27,7 @@ TinyString::~TinyString()
 	release();
 }
 
-const TinyString& TinyString::operator=(const TinyString& value)
+TinyString& TinyString::operator=(const TinyString& value)
 {
 	if(m_lpStringMemory == value.m_lpStringMemory)
 	{
@@ -40,7 +40,7 @@ const TinyString& TinyString::operator=(const TinyString& value)
 	return *this;
 }
 
-const TinyString& TinyString::operator=(const wchar_t* lpString)
+TinyString& TinyString::operator=(const wchar_t* lpString)
 {
 	if(lpString == null)
 	{
@@ -94,6 +94,24 @@ bool TinyString::isEmpty()
 bool TinyString::isNullOrEmpty()
 {
 	return isNull() || isEmpty();
+}
+
+uint TinyString::length()
+{
+	return m_lpStringMemory->length;
+}
+
+bool TinyString::getCharAt(uint index, wchar_t* lpChar_out)
+{
+	if(index >= m_lpStringMemory->length)
+	{
+		return false;
+	}
+	else
+	{
+		*lpChar_out = m_lpStringMemory->lpStr[index];
+		return true;
+	}
 }
 
 void TinyString::release()
@@ -226,6 +244,7 @@ TinyString::StringPool::StringPool(uint numBlocks, uint blockChars):
 		TinyString::StringMemory* lpStringMemory = &m_lpStringMemoryList[i];
 		lpStringMemory->lpBelongToWhichStringPool = this;
 		lpStringMemory->usedCount = 0;
+		lpStringMemory->length = 0;
 		lpStringMemory->indexInStringPool = i;
 		lpStringMemory->lpStr = (wchar_t*)(lpStringMemory + sizeof(TinyString::StringMemory));
 		m_lpFreeIndexStack->push(i);
@@ -261,7 +280,7 @@ TinyString::StringPool::~StringPool()
 TinyString::StringMemory* TinyString::StringPool::pushString(const wchar_t* lpString)
 {
 	assert(lpString != null);
-	assert(wcslen(lpString) != 0);
+	assert(wcslen(lpString) > 0);
 
 	TinyString::StringPool* lpStringPoolPrev = null;
 	TinyString::StringPool* lpStringPoolThis = this;
@@ -289,9 +308,10 @@ TinyString::StringMemory* TinyString::StringPool::pushString(const wchar_t* lpSt
 			uint index;
 			if(m_lpFreeIndexStack->pop(&index))
 			{
-				size_t strLen = wcslen(lpString) + 1/*'\0'*/;
-				memcpy(m_lpStringMemoryList[index].lpStr, lpString, strLen * sizeof(wchar_t));
+				size_t strLen = wcslen(lpString);
+				memcpy(m_lpStringMemoryList[index].lpStr, lpString, (strLen + 1/*'\0'*/) * sizeof(wchar_t));
 				lpStringMemory = &m_lpStringMemoryList[index];
+				lpStringMemory->length = strLen;
 				++lpStringMemory->usedCount;
 				return lpStringMemory;
 			}
@@ -308,12 +328,14 @@ TinyString::StringMemory* TinyString::StringPool::pushString(const wchar_t* lpSt
 TinyString::StringMemory* TinyString::StringPool::setString(const wchar_t* lpString)
 {
 	assert(lpString != null);
+	assert(wcslen(lpString) > 0);
 
+	size_t stringLength = wcslen(lpString);
 	for(uint i = 0; i < m_numBlocks; ++i)
 	{
 		TinyString::StringMemory* lpStringMemory = &m_lpStringMemoryList[i];
 		assert(lpStringMemory != null);
-		if(lpStringMemory->usedCount > 0 && wcscmp(lpString, lpStringMemory->lpStr) == 0)
+		if(lpStringMemory->usedCount > 0 && stringLength == lpStringMemory->length && wcscmp(lpString, lpStringMemory->lpStr) == 0)
 		{
 			return lpStringMemory;
 		}
@@ -330,7 +352,7 @@ void TinyString::StringPool::recycle(TinyString::StringMemory* lpStringMemory)
 
 // StringMemory-----------------------------------------------------------------------------------
 TinyString::StringMemory::StringMemory():
-	lpBelongToWhichStringPool(null), usedCount(0), indexInStringPool(0), lpStr(null)
+	lpBelongToWhichStringPool(null), usedCount(0), indexInStringPool(0), length(0), lpStr(null)
 {
 	// Do nothing
 }

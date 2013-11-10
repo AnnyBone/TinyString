@@ -15,14 +15,19 @@ namespace tinyString
 		TinyString(const wchar_t* lpString);
 		~TinyString();
 
-		const TinyString& operator=(const TinyString& value);
-		const TinyString& operator=(const wchar_t* lpString);
+		TinyString& operator=(const TinyString& value);
+		TinyString& operator=(const wchar_t* lpString);
 		bool operator==(const TinyString& value);
 		bool operator==(const wchar_t* lpString);
 
 		bool isNull();
 		bool isEmpty();
 		bool isNullOrEmpty();
+
+		uint length();
+		bool getCharAt(uint index, wchar_t* lpChar_out);
+		bool subString(uint indexFrom, uint indexTo, TinyString& tinyString_out);
+		bool subStr(uint indexFrom, uint length, TinyString& tinyString_out);
 
 		private:
 		void *operator new(size_t size);
@@ -108,6 +113,7 @@ namespace tinyString
 			StringPool* lpBelongToWhichStringPool;
 			uint usedCount;
 			uint indexInStringPool;
+			uint length;
 			wchar_t* lpStr;
 
 		private:

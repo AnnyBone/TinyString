@@ -19,6 +19,7 @@ int main()
 	TinyString str3 = null;
 	printf("%s\n", str3.isNull() ? "is null string" : "not null string");
 	printf("%s\n", str3 == null ? "is null string" : "not null string");
+	printf("length:%d\n", str3.length());
 
 	TinyString str4(null);
 	printf("%s\n", str4.isNull() ? "is null string" : "not null string");
@@ -30,6 +31,7 @@ int main()
 	TinyString str6 = L"abcdefg";
 	printf("%s\n", str6 == L"abcdefg" ? "equal abcdefg" : "not equal abcdefg");
 	printf("%s\n", str5 == str6 ? "str5 == str6" : "str5 != str6");
+	printf("length:%d\n", str6.length());
 
 	getchar();
 	return 0;
