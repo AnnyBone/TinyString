@@ -24,6 +24,8 @@ namespace tinyString
 		bool isEmpty();
 		bool isNullOrEmpty();
 
+		uint length();
+
 		private:
 		void *operator new(size_t size);
 		void operator delete(void *ptr);
@@ -108,6 +110,7 @@ namespace tinyString
 			StringPool* lpBelongToWhichStringPool;
 			uint usedCount;
 			uint indexInStringPool;
+			uint length;
 			wchar_t* lpStr;
 
 		private:
